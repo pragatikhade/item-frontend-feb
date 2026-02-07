@@ -1,8 +1,8 @@
 import { useState } from "react";
 import "./App.css";
 
-//const API = "http://localhost:8080/api/items";
-const API = "https://<tera-railway-url>/api/items";
+const API = "http://localhost:8080/api/items";
+//const API = "https://<tera-railway-url>/api/items";
 
 function App() {
 
