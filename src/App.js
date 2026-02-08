@@ -1,9 +1,12 @@
 import { useState } from "react";
-import "./App.css";
 
-//const API = "http://localhost:8080/api/items";
-//const API = "https://<tera-railway-url>/api/items";
-const API_URL = "https://item-api-production-ab3d.up.railway.app";
+//const API = "https://osteopathically-unhuzzaed-julian.ngrok-free.dev/api/items";
+//const API = "https://item-api-production-ab3d.up.railway.app";
+//const API = "http://localhost:8080/api/
+//const API = "https://osteopathically-unhuzzaed-julian.ngrok-free.dev/api/items";
+
+ const API = "https://osteopathically-unhuzzaed-julian.ngrok-free.dev/api/items";
+
 
 function App() {
 
@@ -16,7 +19,6 @@ function App() {
 
   const [id, setId] = useState("");
   const [singleItem, setSingleItem] = useState(null);
-  const [items, setItems] = useState([]);
   const [msg, setMsg] = useState("");
 
   // ✅ Create
@@ -25,7 +27,8 @@ function App() {
       const res = await fetch(API, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+           "ngrok-skip-browser-warning": "true"
         },
         body: JSON.stringify({
           id: Number(form.id),
@@ -40,7 +43,17 @@ function App() {
         return;
       }
 
+      await res.json();
+
+      setForm({
+        id: "",
+        name: "",
+        price: "",
+        description: ""
+      });
+
       setMsg("Item created successfully");
+
     } catch (e) {
       setMsg("Server error");
     }
@@ -49,7 +62,11 @@ function App() {
   // ✅ Get by id
   const getById = async () => {
     try {
-      const res = await fetch(`${API}/${id}`);
+     const res = await fetch(`${API}/${id}`, {
+       headers: {
+         "ngrok-skip-browser-warning": "true"
+       }
+     });
 
       if (!res.ok) {
         setSingleItem(null);
@@ -60,19 +77,9 @@ function App() {
       const data = await res.json();
       setSingleItem(data);
       setMsg("");
+
     } catch (e) {
       setMsg("Server error");
-    }
-  };
-
-  // ✅ Get all
-  const getAll = async () => {
-    try {
-      const res = await fetch(API);
-      const data = await res.json();
-      setItems(data);
-    } catch (e) {
-      setMsg("Error loading items");
     }
   };
 
@@ -134,35 +141,6 @@ function App() {
             <p>Description : {singleItem.description}</p>
           </div>
         )}
-      </div>
-
-      {/* Get all */}
-      <div className="card">
-        <h3>All Items</h3>
-
-        <button onClick={getAll}>Get All</button>
-
-        <table>
-          <thead>
-            <tr>
-              <th>Id</th>
-              <th>Name</th>
-              <th>Price</th>
-              <th>Description</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {items.map((it) => (
-              <tr key={it.id}>
-                <td>{it.id}</td>
-                <td>{it.name}</td>
-                <td>{it.price}</td>
-                <td>{it.description}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
       </div>
 
       {msg && <p>{msg}</p>}
